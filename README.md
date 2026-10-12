@@ -1,68 +1,56 @@
-# Pwani Kitchen — Zanzibar Restaurant Concept
+# Pwani Kitchen — Fictional Restaurant Ordering Demo
 
 Live demo: https://pwani-kitchen-zanzibar-restaurant-concept-nf6twq.v2.appdeploy.ai/
 
-A responsive, fictional restaurant website concept inspired by Zanzibar's coastal food culture. **Pwani Kitchen is not a real business.** All menu items, prices, business details, and story copy are illustrative placeholders.
+Pwani Kitchen is a fictional Zanzibar-inspired restaurant portfolio concept. Menu items, prices, voucher codes, delivery fees, restaurant details, and order statuses are illustrative examples; this is not a real restaurant.
 
 ## Features
-- Responsive navigation and layout
-- Sample menu with Tanzanian shilling (TZS) prices and working category filters
-- Featured dishes and responsive food gallery
-- Fictional story and location sections
-- Contact and social details deliberately left as placeholders
-- Accessibility considerations, reduced-motion support, visible keyboard focus, and graceful image fallbacks
-- Clear unofficial-demo disclaimers
+- Searchable menu with category filters and sample food imagery.
+- Persistent shopping cart with quantity changes, line totals, removal, and checkout totals.
+- Delivery or pickup checkout, with delivery-address validation for the demo.
+- Vouchers: PWANI10 (10% off, minimum TZS 20,000), KARIBU15 (15% off, minimum TZS 30,000), and ISLAND5000 (TZS 5,000 off, minimum TZS 40,000).
+- Secure AppDeploy sign-in/sign-out popup; app passwords are not collected.
+- Server-side orders for signed-in customers, with reads and updates scoped to the authenticated user ID.
+- Guest orders stored only in the current browser's local storage.
+- Order references, account/guest order history, and simulated progress transitions.
+- Simulated mobile-money/card outcomes and pay-on-pickup; no real charge or payment details.
 
-## Technologies
-- React + Vite + TypeScript
-- Tailwind CSS
-- Lucide React
+## Demo safety and production limitations
+- There is no real payment processing. A simulated success is only a demonstration outcome.
+- Never enter real card numbers, CVVs, mobile-money PINs, OTPs, or banking credentials.
+- Guest order history is browser-local and is not secure account storage.
+- Server-side saved orders are associated with the authenticated user. The backend checks the menu IDs, quantity boundaries, voucher eligibility, service type, delivery address, and demo payment status.
+- Prices, vouchers, availability, delivery fees, and order status transitions are illustrative. No courier, kitchen, inventory, customer notifications, or real business systems are connected.
+- Obtain business-owner approval before any official launch. Replace all fictional business content only with approved details, publish privacy/terms/refund policies, test accessibility and security, configure monitoring, and implement real operations before accepting real customer orders.
+- To accept real payments, integrate an appropriate provider using its secure server-side confirmation/webhook flow. Do not store raw card data.
 
-## Prerequisites
-- Node.js (current LTS recommended)
-- npm
+## Run locally
+Requires a current Node.js LTS and npm.
 
-## Install and run locally
-```bash
+\`\`\`sh
 npm install
 npm run dev
-```
-Open the local URL printed by Vite.
+\`\`\`
 
-## Production build
-```bash
+The AppDeploy auth popup and database routes require the AppDeploy runtime and will not function in plain local Vite without an equivalent backend.
+
+## Build
+\`\`\`sh
 npm run build
 npm run preview
-```
+\`\`\`
 
-## Where to edit content
-- **Menu items and sample prices:** edit the `menu` array near the top of `src/App.tsx`.
-- **Menu categories:** edit the `categories` array in `src/App.tsx`.
-- **Currency formatting:** edit the `money` helper in `src/App.tsx`.
-- **Contact/location details:** edit the Location and Contact sections in `src/App.tsx`. They intentionally remain placeholders and there is no active phone, email, WhatsApp, map, or social link.
-- **Images:** replace remote URLs in the `menu` and `gallery` arrays and in the Hero and Story sections. Use original, owner-supplied, or appropriately licensed images. An image fallback is displayed if a remote image fails.
-- **Brand styling:** edit the design tokens near the top of `src/index.css`.
-- **Page title and SEO description:** edit `index.html`.
-- **Favicon:** replace `public/favicon.svg` with an approved brand mark if needed.
+## Project structure
+- \`src/App.tsx\`: customer storefront and ordering experience.
+- \`src/index.css\`: responsive visual system.
+- \`backend/index.ts\`: authenticated order creation, read, and progress endpoints.
+- \`tests/tests.json\`: user-visible end-to-end test plan.
 
-## WhatsApp configuration
-No number is configured and no WhatsApp action is active in this demo. Before adding a WhatsApp link, obtain written permission and verify the business number. Add an explicit, validated international-format number and a click-to-chat URL. Never route customer messages to a personal or unapproved number.
-
-## Deploy the demo
-Run `npm run build` and deploy the generated `dist` directory to a static host such as Vercel or Netlify. Check the current free-tier terms before using a host for a client's production site.
-
-## Owner approval checklist before official launch
-- [ ] Obtain written owner approval for the website, branding, and public launch.
-- [ ] Confirm the official business name and approved logo/brand assets.
-- [ ] Replace all fictional dishes, descriptions, and sample prices with an owner-approved menu.
-- [ ] Replace sample photography only with owner-supplied or properly licensed images.
-- [ ] Verify telephone, WhatsApp, email, social links, address, map location, and opening hours.
-- [ ] Agree who owns the domain and hosting account; client should retain account ownership.
-- [ ] Agree project scope, payment, revision limits, support, maintenance, and handover terms.
-- [ ] Review accessibility and test on current mobile and desktop browsers.
-- [ ] Verify SEO metadata and any necessary privacy/legal notices.
-- [ ] Remove unofficial-demo notices only after written approval and verified content are in place.
-- [ ] Test navigation, external links, responsive layouts, and image fallbacks on the final build.
-
-## Limitations
-This is a frontend-only demo. It does not collect enquiries, process reservations, accept orders or payments, store customer data, or contain an admin panel. Menu filters are client-side only. Remote images and Google Fonts require an internet connection.
+## Launch checklist
+- [ ] Run the production build and desktop/mobile acceptance tests.
+- [ ] Confirm cross-account order isolation, input validation, and failure handling.
+- [ ] Replace fictional menu, imagery, pricing and contact information with approved content.
+- [ ] Add an owner-approved privacy notice, terms and refund policy.
+- [ ] Configure real inventory, delivery and operations integrations, if required.
+- [ ] Integrate a real payment provider securely before claiming payments are supported.
+- [ ] Ensure the restaurant owner controls the domain and hosting account.
