@@ -1,0 +1,108 @@
+[
+  {
+    "name": "Complete an account pickup order with voucher",
+    "sanity": true,
+    "viewport": "desktop",
+    "covers": [
+      "searchable menu",
+      "add to cart",
+      "quantity controls",
+      "voucher rules and discount totals",
+      "pickup checkout",
+      "simulated payment success",
+      "authenticated API order creation",
+      "order confirmation",
+      "account-scoped order persistence"
+    ],
+    "description": "Verifies a signed-in customer can select sample food, apply an eligible voucher, complete demo checkout, and see a server-saved order.",
+    "steps": [
+      "Sign in using the account button and complete the AppDeploy sign-in popup",
+      "Open Order online and add Coconut Fish Curry and Zanzibar Pilau Bowl",
+      "Open Cart and increase the quantity of one dish",
+      "Enter PWANI10 and apply the voucher",
+      "Continue to checkout and choose Pickup",
+      "Select Card (demo), keep Simulate success selected, and complete demo checkout",
+      "Open My orders"
+    ],
+    "expected": "The total reflects quantities and a 10% discount, no card details are requested, a reference is shown, and the order appears in the current account's saved order history."
+  },
+  {
+    "name": "Reject invalid voucher and failed payment",
+    "viewport": "desktop",
+    "covers": [
+      "voucher rejection",
+      "minimum order guardrail",
+      "failed simulated payment",
+      "cart retained on failure",
+      "server-side checkout validation"
+    ],
+    "description": "Verifies invalid checkout inputs and demo payment failure do not create a completed order.",
+    "steps": [
+      "Add Cassava Crisps to the cart",
+      "Apply the invented code NOTREAL and observe the warning",
+      "Continue to checkout and choose Pickup",
+      "Select Simulate failure and click Complete demo payment and order",
+      "Return to Cart"
+    ],
+    "expected": "The invalid code is rejected, payment failure shows an error, no order confirmation is created, and the cart contents remain available for retry."
+  },
+  {
+    "name": "Complete guest pickup order on mobile and retain history",
+    "viewport": "mobile",
+    "covers": [
+      "mobile navigation",
+      "cart persistence after reload",
+      "guest checkout",
+      "guest order history persistence",
+      "order progress transition"
+    ],
+    "description": "Verifies a guest can place a pickup order at mobile width and find it after reloading the page.",
+    "steps": [
+      "Open Order online on a mobile viewport and add Mango Lime Cooler",
+      "Refresh the browser and open Cart",
+      "Continue to checkout, select Pickup and Pay on pickup",
+      "Confirm the demo order",
+      "Open My orders and advance the guest order status once",
+      "Refresh and open My orders again"
+    ],
+    "expected": "The cart survives refresh, the guest receives a reference, the status changes, and the guest order remains available in the same browser."
+  },
+  {
+    "name": "Sign out and keep account orders private",
+    "viewport": "desktop",
+    "covers": [
+      "secure sign-in and sign-out",
+      "protected order API",
+      "cross-user order isolation",
+      "account state"
+    ],
+    "description": "Verifies account session state and the authenticated boundary around server-stored orders.",
+    "steps": [
+      "Sign in through the account button",
+      "Open My account and choose Sign out",
+      "Open My orders while signed out",
+      "Use the Sign in for saved order history action if there are no guest orders"
+    ],
+    "expected": "The account session is cleared from the interface and server-saved orders are not returned to the anonymous visitor because the orders endpoint requires authentication."
+  },
+  {
+    "name": "Search and filter the mobile menu",
+    "viewport": "mobile",
+    "covers": [
+      "menu search",
+      "category filtering",
+      "empty search state",
+      "responsive layout",
+      "demo disclosure"
+    ],
+    "description": "Verifies customers can quickly find menu items on mobile and see an accurate empty result state.",
+    "steps": [
+      "Open Order online",
+      "Search for Mango",
+      "Choose Drinks",
+      "Change the search phrase to a non-matching name",
+      "Clear the search and read the demo notice"
+    ],
+    "expected": "Search and category filters combine correctly, no-match results show a helpful empty state, and the app remains identified as a fictional demonstration."
+  }
+]
