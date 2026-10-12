@@ -1,26 +1,32 @@
 import { router, json, error, db, requireAuth } from '@appdeploy/sdk';
 
-type MenuLine = { id: string; quantity: number };
+type MenuLine = { id: string; quantity: number; flavour?: string; topping?: string };
 type ServiceType = 'delivery' | 'pickup';
 type PaymentMethod = 'mobile-money-demo' | 'card-demo' | 'pay-on-pickup';
 type Status = 'Confirmed' | 'Preparing' | 'Ready for Pickup' | 'Out for Delivery' | 'Completed';
-type Dish = { id: string; name: string; price: number };
+type Dish = { id: string; name: string; price: number; flavours: string[]; toppings: string[] };
 type OrderRecord = {
   ownerId: string;
   reference: string;
-  items: Array<{ id: string; name: string; price: number; quantity: number; lineTotal: number }>;
+  items: Array<{ id: string; name: string; price: number; quantity: number; lineTotal: number; flavour: string; topping: string }>;
   serviceType: ServiceType; deliveryAddress: string; voucherCode: string; subtotal: number;
   deliveryFee: number; discount: number; total: number; paymentMethod: PaymentMethod;
   paymentStatus: string; status: Status; createdAt: string;
 };
 const MENU: Dish[] = [
-  {id:'coconut-fish-curry',name:'Coconut Fish Curry',price:18000},{id:'zanzibar-pilau',name:'Zanzibar Pilau Bowl',price:14000},
-  {id:'chapati-coconut-beans',name:'Chapati & Coconut Beans',price:9500},{id:'grilled-lime-prawns',name:'Grilled Lime Prawns',price:22000},
-  {id:'cassava-crisps',name:'Cassava Crisps',price:6500},{id:'spiced-iced-coffee',name:'Spiced Iced Coffee',price:7000},
-  {id:'mango-lime-cooler',name:'Mango Lime Cooler',price:5500},{id:'banana-pancakes',name:'Sweet Banana Pancakes',price:8500},
-  {id:'tropical-fruit-bowl',name:'Tropical Fruit Bowl',price:8000},{id:'spiced-chips',name:'Zanzibar Spiced Chips',price:7500},
-  {id:'coconut-vegetable-rice',name:'Coconut Vegetable Rice',price:12000},{id:'passion-cooler',name:'Passion Fruit Cooler',price:6000}
-];
+  {id:'coconut-fish-curry',name:'Coconut Fish Curry',price:18000,flavours:['Mild coconut','Zesty lime','Island spice'],toppings:['Fresh coriander','Charred lime','Crispy onions','No extra topping']},
+  {id:'zanzibar-pilau',name:'Zanzibar Pilau Bowl',price:14000,flavours:['Classic pilau','Extra aromatic','Chilli kick'],toppings:['Crispy onions','Fresh coriander','Cashew crunch','No extra topping']},
+  {id:'chapati-coconut-beans',name:'Chapati & Coconut Beans',price:9500,flavours:['Mild coconut','Tomato & herb','Spiced'],toppings:['Fresh coriander','Chilli oil','Lime wedge','No extra topping']},
+  {id:'grilled-lime-prawns',name:'Grilled Lime Prawns',price:22000,flavours:['Garlic & lime','Island chilli','Herb-forward'],toppings:['Charred lime','Fresh coriander','Chilli flakes','No extra topping']},
+  {id:'cassava-crisps',name:'Cassava Crisps',price:6500,flavours:['Sea salt','Chilli lime','Coastal spice'],toppings:['Tamarind dip','Garlic yoghurt dip','Extra lime','No extra topping']},
+  {id:'spiced-iced-coffee',name:'Spiced Iced Coffee',price:7000,flavours:['Classic cardamom','Vanilla','Less sweet'],toppings:['Cinnamon dust','Whipped cream','Extra ice','No extra topping']},
+  {id:'mango-lime-cooler',name:'Mango Lime Cooler',price:5500,flavours:['Sweet mango','Extra lime','Passionfruit twist'],toppings:['Fresh mint','Lime wheel','Chia sprinkle','No extra topping']},
+  {id:'banana-pancakes',name:'Sweet Banana Pancakes',price:8500,flavours:['Cinnamon banana','Chocolate drizzle','Honey butter'],toppings:['Fresh banana','Toasted coconut','Chocolate chips','No extra topping']},
+  {id:'tropical-fruit-bowl',name:'Tropical Fruit Bowl',price:8000,flavours:['Bright citrus','Tropical sweet','Mint & lime'],toppings:['Toasted coconut','Chia sprinkle','Mint leaves','No extra topping']},
+  {id:'spiced-chips',name:'Zanzibar Spiced Chips',price:7500,flavours:['Classic masala','Chilli kick','Lemon pepper'],toppings:['Kachumbari','Chilli sauce','Extra lime','No extra topping']},
+  {id:'coconut-vegetable-rice',name:'Coconut Vegetable Rice',price:12000,flavours:['Coconut classic','Extra ginger','Chilli herb'],toppings:['Roasted cashews','Fresh coriander','Crispy onions','No extra topping']},
+  {id:'passion-cooler',name:'Passion Fruit Cooler',price:6000,flavours:['Classic passion fruit','Extra lime','Mango passion'],toppings:['Fresh mint','Lime wheel','Passion fruit seeds','No extra topping']}
+];;
 const VOUCHERS: Record<string,{min:number;kind:'percent'|'fixed';value:number}> = {
   PWANI10:{min:20000,kind:'percent',value:10},KARIBU15:{min:30000,kind:'percent',value:15},ISLAND5000:{min:40000,kind:'fixed',value:5000}
 };
@@ -59,12 +65,17 @@ export const handler = router({
       const quantities=new Map<string,number>();
       for(const item of body.items){
         if(!item||typeof item.id!=='string'||!Number.isInteger(item.quantity)||item.quantity<1||item.quantity>30) return error('Each quantity must be between 1 and 30.',400);
-        if(!MENU.some(dish=>dish.id===item.id)) return error('An item is not part of this sample menu.',400);
+        const available=MENU.find(dish=>dish.id===item.id);
+        if(!available) return error('An item is not part of this sample menu.',400);
+        if(item.flavour && !available.flavours.includes(item.flavour)) return error('Choose a valid flavour for each sample dish.',400);
+        if(item.topping && !available.toppings.includes(item.topping)) return error('Choose a valid topping for each sample dish.',400);
         quantities.set(item.id,(quantities.get(item.id)||0)+item.quantity);
       }
+      const choiceById = new Map(body.items.map(item=>[item.id,item]));
       const items=[...quantities.entries()].map(([id,quantity])=>{
         const dish=MENU.find(candidate=>candidate.id===id)!;
-        return {id,name:dish.name,price:dish.price,quantity,lineTotal:dish.price*quantity};
+        const submitted=choiceById.get(id);
+        return {id,name:dish.name,price:dish.price,quantity,lineTotal:dish.price*quantity,flavour:submitted?.flavour&&dish.flavours.includes(submitted.flavour)?submitted.flavour:dish.flavours[0],topping:submitted?.topping&&dish.toppings.includes(submitted.topping)?submitted.topping:'No extra topping'};
       });
       if(items.some(item=>item.quantity>30)) return error('Each dish has a maximum demo quantity of 30.',400);
       const subtotal=items.reduce((sum,item)=>sum+item.lineTotal,0);
