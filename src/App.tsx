@@ -141,7 +141,7 @@ function App() {
     const items=cart.map(line=>({id:line.dish.id,name:line.dish.name,price:line.dish.price,quantity:line.quantity,lineTotal:line.dish.price*line.quantity}));
     const order:PlacedOrder={
       id:'guest-'+Date.now().toString(36),reference:'PW-'+Math.random().toString(36).slice(2,8).toUpperCase(),items,
-      serviceType,deliveryAddress:serviceType==='delivery'?deliveryAddress.trim():'',voucherCode:appliedVoucher,
+      serviceType,deliveryAddress:'',voucherCode:appliedVoucher,
       subtotal,deliveryFee,discount,total,paymentMethod,paymentStatus:paymentMethod==='pay-on-pickup'?'Pay on pickup':'Demo payment successful — no money charged',
       status:'Confirmed',createdAt:new Date().toISOString()
     };
