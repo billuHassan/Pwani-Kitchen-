@@ -19,6 +19,7 @@ Pwani Kitchen is a fictional Zanzibar-inspired restaurant portfolio concept. Men
 - There is no real payment processing. A simulated success is only a demonstration outcome.
 - Never enter real card numbers, CVVs, mobile-money PINs, OTPs, or banking credentials.
 - Guest order history is browser-local and is not secure account storage.
+- Delivery addresses are validated for checkout but are deliberately not retained in guest or server-side demo order records, because no real courier or restaurant receives the demo order.
 - Server-side saved orders are associated with the authenticated user. The backend checks the menu IDs, quantity boundaries, voucher eligibility, service type, delivery address, and demo payment status.
 - Prices, vouchers, availability, delivery fees, and order status transitions are illustrative. No courier, kitchen, inventory, customer notifications, or real business systems are connected.
 - Obtain business-owner approval before any official launch. Replace all fictional business content only with approved details, publish privacy/terms/refund policies, test accessibility and security, configure monitoring, and implement real operations before accepting real customer orders.
