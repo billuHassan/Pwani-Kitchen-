@@ -75,7 +75,8 @@ export const handler = router({
       const deliveryFee=body.serviceType==='delivery'?3500:0;
       const record:OrderRecord={
         ownerId:ctx.user!.userId,reference:newReference(),items,serviceType:body.serviceType,
-        deliveryAddress:body.serviceType==='delivery'?body.deliveryAddress!.trim().slice(0,500):'',
+        // The demo validates delivery addresses but intentionally does not persist personal address data.
+        deliveryAddress:'',
         voucherCode,subtotal,deliveryFee,discount,total:Math.max(0,subtotal+deliveryFee-discount),
         paymentMethod:body.paymentMethod!,paymentStatus:body.paymentMethod==='pay-on-pickup'?'Pay on pickup':'Demo payment successful — no money was charged',
         status:'Confirmed',createdAt:new Date().toISOString()
