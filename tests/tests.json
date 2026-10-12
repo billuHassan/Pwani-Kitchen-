@@ -86,23 +86,28 @@
     "expected": "The account session is cleared from the interface and server-saved orders are not returned to the anonymous visitor because the orders endpoint requires authentication."
   },
   {
-    "name": "Search and filter the mobile menu",
+    "name": "Search, open a dish detail page and customise on mobile",
     "viewport": "mobile",
     "covers": [
-      "menu search",
-      "category filtering",
-      "empty search state",
-      "responsive layout",
-      "demo disclosure"
+      "menu search and category filtering",
+      "full food item detail page",
+      "preparation description",
+      "flavour and topping selection",
+      "sample rating disclosure and local review form",
+      "add item to cart feedback",
+      "selected choices persisted with cart line",
+      "feedback after quantity updates"
     ],
-    "description": "Verifies customers can quickly find menu items on mobile and see an accurate empty result state.",
+    "description": "Verifies that tapping a dish opens a full detail experience with useful information, customisation, disclosed sample ratings, and clear responses for customer actions.",
     "steps": [
-      "Open Order online",
-      "Search for Mango",
-      "Choose Drinks",
-      "Change the search phrase to a non-matching name",
-      "Clear the search and read the demo notice"
+      "Open Order online on mobile and search for Mango",
+      "Tap Mango Lime Cooler's photo or title",
+      "Read the preparation description and sample-rating disclaimer",
+      "Select Extra lime flavour and Fresh mint topping",
+      "Tap Add to cart and observe the success message",
+      "Use View cart and verify the selected choices are shown with the drink",
+      "Increase the quantity and observe the quantity update feedback"
     ],
-    "expected": "Search and category filters combine correctly, no-match results show a helpful empty state, and the app remains identified as a fictional demonstration."
+    "expected": "The dedicated item page explains preparation, offers flavour and topping options, and labels ratings as illustrative. The selected options remain on the cart line, and adding or changing quantity produces clear confirmation."
   }
 ]
